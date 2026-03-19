@@ -1,0 +1,2523 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Mastery – Курс для Андрея</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface-2: #232733;
+    --surface-3: #2c3040;
+    --border: #333847;
+    --text: #e4e7f1;
+    --text-secondary: #9399ad;
+    --accent: #6c5ce7;
+    --accent-light: #a29bfe;
+    --green: #00cec9;
+    --green-dim: rgba(0,206,201,0.15);
+    --orange: #fdcb6e;
+    --orange-dim: rgba(253,203,110,0.15);
+    --red: #ff6b6b;
+    --blue: #74b9ff;
+    --purple: #a29bfe;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── Sidebar ── */
+  .layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    width: 280px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 100;
+    transition: transform 0.3s;
+  }
+
+  .sidebar-header {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-header h1 {
+    font-size: 20px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-light), var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .sidebar-header .subtitle {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+
+  .progress-bar-container {
+    margin: 16px 20px 0;
+    background: var(--surface-3);
+    border-radius: 20px;
+    height: 8px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    border-radius: 20px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  .progress-text {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    padding: 0 20px;
+  }
+
+  .nav-section {
+    padding: 8px 12px;
+  }
+
+  .nav-phase {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    padding: 12px 8px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .nav-item:hover {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+
+  .nav-item.active {
+    background: rgba(108,92,231,0.15);
+    color: var(--accent-light);
+  }
+
+  .nav-item.completed .nav-dot {
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(0,206,201,0.4);
+  }
+
+  .nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--surface-3);
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .nav-item.active .nav-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ── Main content ── */
+  .main {
+    flex: 1;
+    margin-left: 280px;
+    padding: 40px 60px;
+    max-width: 900px;
+  }
+
+  .lesson {
+    display: none;
+  }
+
+  .lesson.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .lesson-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  .badge-theory { background: rgba(116,185,255,0.15); color: var(--blue); }
+  .badge-practice { background: var(--green-dim); color: var(--green); }
+  .badge-project { background: var(--orange-dim); color: var(--orange); }
+  .badge-challenge { background: rgba(255,107,107,0.15); color: var(--red); }
+
+  .lesson h2 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .lesson-meta {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .lesson-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .lesson h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 32px 0 12px;
+    color: var(--accent-light);
+  }
+
+  .lesson h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 24px 0 8px;
+    color: var(--text);
+  }
+
+  .lesson p {
+    margin-bottom: 16px;
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+
+  .lesson p strong {
+    color: var(--text);
+  }
+
+  .lesson ul, .lesson ol {
+    margin: 0 0 16px 20px;
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+
+  .lesson li {
+    margin-bottom: 8px;
+  }
+
+  .lesson li strong {
+    color: var(--text);
+  }
+
+  /* ── Special blocks ── */
+  .info-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+
+  .info-block.tip {
+    border-left: 3px solid var(--green);
+  }
+
+  .info-block.warning {
+    border-left: 3px solid var(--orange);
+  }
+
+  .info-block.key-concept {
+    border-left: 3px solid var(--accent);
+    background: rgba(108,92,231,0.06);
+  }
+
+  .info-block .block-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .info-block.tip .block-title { color: var(--green); }
+  .info-block.warning .block-title { color: var(--orange); }
+  .info-block.key-concept .block-title { color: var(--accent-light); }
+
+  .info-block p:last-child { margin-bottom: 0; }
+
+  .code-block {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    margin: 16px 0;
+    overflow-x: auto;
+    color: var(--text);
+  }
+
+  .code-block .comment { color: var(--text-secondary); }
+  .code-block .highlight { color: var(--green); }
+  .code-block .accent { color: var(--accent-light); }
+
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .comparison-bad, .comparison-good {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-bad {
+    border-top: 3px solid var(--red);
+  }
+
+  .comparison-good {
+    border-top: 3px solid var(--green);
+  }
+
+  .comparison-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .comparison-bad .comparison-label { color: var(--red); }
+  .comparison-good .comparison-label { color: var(--green); }
+
+  .comparison-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  /* ── Tasks checklist ── */
+  .task-list {
+    margin: 20px 0;
+    list-style: none;
+    padding: 0;
+  }
+
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .task-item:hover {
+    border-color: var(--accent);
+  }
+
+  .task-item.done {
+    opacity: 0.6;
+    border-color: var(--green);
+  }
+
+  .task-item.done .task-text {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+  }
+
+  .task-checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    transition: all 0.2s;
+  }
+
+  .task-item.done .task-checkbox {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .task-checkbox::after {
+    content: '✓';
+    font-size: 12px;
+    color: var(--bg);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .task-item.done .task-checkbox::after {
+    opacity: 1;
+  }
+
+  .task-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  /* ── Resource links ── */
+  .resources {
+    margin: 20px 0;
+  }
+
+  .resource-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+  }
+
+  .resource-link:hover {
+    border-color: var(--accent);
+    background: var(--surface-2);
+  }
+
+  .resource-icon {
+    font-size: 20px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-3);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+  }
+
+  .resource-info {
+    flex: 1;
+  }
+
+  .resource-title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .resource-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .resource-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .tag-video { background: rgba(255,107,107,0.15); color: var(--red); }
+  .tag-article { background: rgba(116,185,255,0.15); color: var(--blue); }
+  .tag-tool { background: var(--green-dim); color: var(--green); }
+  .tag-course { background: rgba(162,155,254,0.15); color: var(--purple); }
+
+  /* ── Navigation buttons ── */
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-light);
+    color: var(--bg);
+  }
+
+  .btn-secondary {
+    background: var(--surface-2);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    color: var(--text);
+    border-color: var(--text-secondary);
+  }
+
+  .btn-complete {
+    background: var(--green);
+    color: var(--bg);
+    font-weight: 700;
+  }
+
+  .btn-complete:hover {
+    box-shadow: 0 0 20px rgba(0,206,201,0.3);
+  }
+
+  .btn-complete.completed {
+    background: var(--surface-2);
+    color: var(--green);
+    border: 1px solid var(--green);
+  }
+
+  /* ── Mobile ── */
+  .menu-toggle {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 200;
+    width: 40px;
+    height: 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--text);
+    font-size: 18px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      transform: translateX(-100%);
+    }
+    .sidebar.open {
+      transform: translateX(0);
+    }
+    .main {
+      margin-left: 0;
+      padding: 60px 20px 40px;
+    }
+    .menu-toggle {
+      display: flex;
+    }
+    .comparison {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ── Welcome screen ── */
+  .welcome-hero {
+    text-align: center;
+    padding: 40px 0;
+  }
+
+  .welcome-hero .emoji-big {
+    font-size: 64px;
+    margin-bottom: 20px;
+  }
+
+  .welcome-hero h2 {
+    font-size: 36px;
+    background: linear-gradient(135deg, var(--accent-light), var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+  }
+
+  .phase-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 24px 0;
+  }
+
+  @media (max-width: 768px) {
+    .phase-cards { grid-template-columns: 1fr; }
+  }
+
+  .phase-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .phase-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .phase-card .phase-num {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-light);
+    margin-bottom: 4px;
+  }
+
+  .phase-card h4 {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .phase-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 32px 0;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--accent-light);
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Prompt playground ── */
+  .prompt-playground {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 20px 0;
+  }
+
+  .prompt-playground textarea {
+    width: 100%;
+    min-height: 80px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    resize: vertical;
+    margin-bottom: 12px;
+  }
+
+  .prompt-playground textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .prompt-playground .hint {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border); }
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1>🤖 AI Mastery</h1>
+      <div class="subtitle">Курс для Андрея</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBar"></div>
+      </div>
+      <div class="progress-text" id="progressText">0 из 20 уроков</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-item active" data-lesson="welcome" onclick="goTo('welcome')">
+        <span class="nav-dot"></span> Старт
+      </div>
+
+      <div class="nav-phase">Фаза 1 – Промпты</div>
+      <div class="nav-item" data-lesson="1-1" onclick="goTo('1-1')"><span class="nav-dot"></span> Что такое AI</div>
+      <div class="nav-item" data-lesson="1-2" onclick="goTo('1-2')"><span class="nav-dot"></span> Анатомия промпта</div>
+      <div class="nav-item" data-lesson="1-3" onclick="goTo('1-3')"><span class="nav-dot"></span> 5 приёмов</div>
+      <div class="nav-item" data-lesson="1-4" onclick="goTo('1-4')"><span class="nav-dot"></span> Промпт-челлендж</div>
+
+      <div class="nav-phase">Фаза 2 – Инструменты</div>
+      <div class="nav-item" data-lesson="2-1" onclick="goTo('2-1')"><span class="nav-dot"></span> Генерация картинок</div>
+      <div class="nav-item" data-lesson="2-2" onclick="goTo('2-2')"><span class="nav-dot"></span> AI для текстов</div>
+      <div class="nav-item" data-lesson="2-3" onclick="goTo('2-3')"><span class="nav-dot"></span> AI для учёбы</div>
+      <div class="nav-item" data-lesson="2-4" onclick="goTo('2-4')"><span class="nav-dot"></span> Проект: свой гайд</div>
+
+      <div class="nav-phase">Фаза 3 – Код</div>
+      <div class="nav-item" data-lesson="3-1" onclick="goTo('3-1')"><span class="nav-dot"></span> Python + AI</div>
+      <div class="nav-item" data-lesson="3-2" onclick="goTo('3-2')"><span class="nav-dot"></span> Первая программа</div>
+      <div class="nav-item" data-lesson="3-3" onclick="goTo('3-3')"><span class="nav-dot"></span> Телеграм-бот</div>
+      <div class="nav-item" data-lesson="3-4" onclick="goTo('3-4')"><span class="nav-dot"></span> Читаем чужой код</div>
+
+      <div class="nav-phase">Фаза 4 – Агенты</div>
+      <div class="nav-item" data-lesson="4-1" onclick="goTo('4-1')"><span class="nav-dot"></span> Чат vs Агент</div>
+      <div class="nav-item" data-lesson="4-2" onclick="goTo('4-2')"><span class="nav-dot"></span> API и интеграции</div>
+      <div class="nav-item" data-lesson="4-3" onclick="goTo('4-3')"><span class="nav-dot"></span> No-code автоматизации</div>
+      <div class="nav-item" data-lesson="4-4" onclick="goTo('4-4')"><span class="nav-dot"></span> Проект: мой агент</div>
+
+      <div class="nav-phase">Фаза 5 – Продвинутый</div>
+      <div class="nav-item" data-lesson="5-1" onclick="goTo('5-1')"><span class="nav-dot"></span> Как устроен LLM</div>
+      <div class="nav-item" data-lesson="5-2" onclick="goTo('5-2')"><span class="nav-dot"></span> Мультимодальность</div>
+      <div class="nav-item" data-lesson="5-3" onclick="goTo('5-3')"><span class="nav-dot"></span> AI-этика</div>
+      <div class="nav-item" data-lesson="5-4" onclick="goTo('5-4')"><span class="nav-dot"></span> Финальный проект</div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- ════════════════════ WELCOME ════════════════════ -->
+    <div class="lesson active" id="lesson-welcome">
+      <div class="welcome-hero">
+        <div class="emoji-big">🚀</div>
+        <h2>Добро пожаловать, Андрей!</h2>
+        <p>Этот курс превратит тебя из пользователя AI в человека, который <strong>управляет</strong> искусственным интеллектом. Не просто болтает с ChatGPT, а строит системы, автоматизирует задачи и создаёт свои проекты.</p>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat">
+          <div class="stat-num">20</div>
+          <div class="stat-label">Уроков</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">5</div>
+          <div class="stat-label">Фаз</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">4</div>
+          <div class="stat-label">Проекта</div>
+        </div>
+      </div>
+
+      <div class="phase-cards">
+        <div class="phase-card" onclick="goTo('1-1')">
+          <div class="phase-num">Фаза 1</div>
+          <h4>🎯 Промпт-инженерия</h4>
+          <p>Научишься формулировать запросы так, чтобы AI делал именно то, что тебе нужно</p>
+        </div>
+        <div class="phase-card" onclick="goTo('2-1')">
+          <div class="phase-num">Фаза 2</div>
+          <h4>🛠 AI как инструмент</h4>
+          <p>Картинки, тексты, учёба – AI решает реальные задачи, а не просто отвечает</p>
+        </div>
+        <div class="phase-card" onclick="goTo('3-1')">
+          <div class="phase-num">Фаза 3</div>
+          <h4>💻 Код с AI</h4>
+          <p>Python, боты, программы – пишешь код руками AI и понимаешь каждую строку</p>
+        </div>
+        <div class="phase-card" onclick="goTo('4-1')">
+          <div class="phase-num">Фаза 4</div>
+          <h4>🤖 Агенты</h4>
+          <p>Создаёшь AI, который сам выполняет задачи: план → действия → результат</p>
+        </div>
+      </div>
+
+      <div class="info-block tip">
+        <div class="block-title">💡 Как проходить курс</div>
+        <p><strong>Темп:</strong> 2–3 урока в неделю, по 40–60 минут каждый.</p>
+        <p><strong>Главное правило:</strong> не переходи к следующему уроку, пока не выполнил все задания текущего. Отмечай галочками – прогресс сохраняется.</p>
+        <p><strong>Совет:</strong> держи рядом открытый ChatGPT или Claude – будешь практиковаться прямо во время чтения.</p>
+      </div>
+
+      <div class="lesson-nav">
+        <div></div>
+        <button class="btn btn-primary" onclick="goTo('1-1')">Начать курс →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 1-1: Что такое AI ════════════════════ -->
+    <div class="lesson" id="lesson-1-1">
+      <span class="lesson-badge badge-theory">Теория</span>
+      <h2>Что такое AI на самом деле</h2>
+      <div class="lesson-meta">
+        <span>📖 ~15 мин</span>
+        <span>Фаза 1, Урок 1</span>
+      </div>
+
+      <p>Ты уже пользуешься ChatGPT и DeepSeek. Но знаешь ли ты, как они на самом деле работают? Давай разберёмся – без сложной математики, на пальцах.</p>
+
+      <h3>AI – это не мозг</h3>
+      <p>Первое заблуждение: AI думает как человек. Нет. <strong>AI – это программа, которая очень хорошо угадывает следующее слово.</strong></p>
+      <p>Представь: ты читаешь предложение "Кот сидел на...". Что дальше? Скорее всего "крыше", "стуле" или "окне". Ты угадываешь, потому что читал тысячи текстов. AI делает то же самое, только он прочитал <strong>миллиарды</strong> текстов и угадывает гораздо точнее.</p>
+
+      <div class="info-block key-concept">
+        <div class="block-title">🔑 Ключевая идея</div>
+        <p><strong>LLM (Large Language Model)</strong> – большая языковая модель. Это нейросеть, обученная на огромном количестве текста. ChatGPT, Claude, DeepSeek – всё это LLM. Они не понимают текст как человек, но генерируют его настолько хорошо, что кажется, будто понимают.</p>
+      </div>
+
+      <h3>Три типа AI</h3>
+      <ol>
+        <li><strong>Текстовые (LLM)</strong> – ChatGPT, Claude, DeepSeek, GigaChat. Работают с текстом: отвечают на вопросы, пишут код, переводят.</li>
+        <li><strong>Генерация картинок</strong> – Midjourney, DALL-E, Stable Diffusion, Kandinsky. Создают изображения по описанию.</li>
+        <li><strong>Мультимодальные</strong> – GPT-4o, Claude 3.5, Gemini. Понимают и текст, и картинки, и аудио одновременно.</li>
+      </ol>
+
+      <h3>Чем отличаются модели</h3>
+      <p>Это как машины – все ездят, но по-разному:</p>
+      <ul>
+        <li><strong>ChatGPT (OpenAI)</strong> – самый популярный, хорош для разговоров и творчества</li>
+        <li><strong>Claude (Anthropic)</strong> – лучше всех работает с длинными текстами и кодом, более точный</li>
+        <li><strong>DeepSeek</strong> – бесплатный, хорошо знает математику и код</li>
+        <li><strong>Gemini (Google)</strong> – интегрирован с Google, хорош для поиска</li>
+        <li><strong>GigaChat (Сбер)</strong> – русскоязычный, знает российский контекст</li>
+      </ul>
+
+      <div class="info-block tip">
+        <div class="block-title">💡 Совет профи</div>
+        <p>Профессионалы не используют один AI – они используют <strong>разные модели для разных задач</strong>. Как набор инструментов: молоток для гвоздей, отвёртка для винтов. Папа, например, использует Claude для работы с кодом и автоматизациями, а другие модели – для других задач.</p>
+      </div>
+
+      <h3>Почитать и посмотреть</h3>
+      <div class="resources">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=zjkBMFhNj_g" target="_blank">
+          <div class="resource-icon">🎬</div>
+          <div class="resource-info">
+            <div class="resource-title">Как работает ChatGPT за 5 минут</div>
+            <div class="resource-desc">Andrej Karpathy (создатель AI в Tesla) объясняет просто</div>
+          </div>
+          <span class="resource-tag tag-video">Видео</span>
+        </a>
+        <a class="resource-link" href="https://ig.ft.com/generative-ai/" target="_blank">
+          <div class="resource-icon">📰</div>
+          <div class="resource-info">
+            <div class="resource-title">Generative AI explained (Financial Times)</div>
+            <div class="resource-desc">Интерактивная визуализация работы LLM</div>
+          </div>
+          <span class="resource-tag tag-article">Статья</span>
+        </a>
+        <a class="resource-link" href="https://chat.openai.com" target="_blank">
+          <div class="resource-icon">🔧</div>
+          <div class="resource-info">
+            <div class="resource-title">ChatGPT</div>
+            <div class="resource-desc">Твой основной инструмент для первой фазы</div>
+          </div>
+          <span class="resource-tag tag-tool">Инструмент</span>
+        </a>
+        <a class="resource-link" href="https://claude.ai" target="_blank">
+          <div class="resource-icon">🔧</div>
+          <div class="resource-info">
+            <div class="resource-title">Claude</div>
+            <div class="resource-desc">Второй инструмент – попробуй тот же запрос здесь и сравни</div>
+          </div>
+          <span class="resource-tag tag-tool">Инструмент</span>
+        </a>
+      </div>
+
+      <h3>✅ Задания</h3>
+      <ul class="task-list" data-lesson="1-1">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Открой ChatGPT и спроси: "Объясни как ты работаешь, как будто мне 12 лет". Прочитай ответ</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Задай тот же вопрос Claude (claude.ai). Сравни ответы – чем они отличаются?</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Спроси любую модель: "Ты правда думаешь или просто угадываешь слова?" – запомни ответ</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Запиши в тетрадь или заметки: 3 отличия между ChatGPT и Claude, которые ты заметил</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('welcome')">← Назад</button>
+        <button class="btn btn-complete" id="complete-1-1" onclick="completeLesson('1-1')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('1-2')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 1-2: Анатомия промпта ════════════════════ -->
+    <div class="lesson" id="lesson-1-2">
+      <span class="lesson-badge badge-theory">Теория + Практика</span>
+      <h2>Анатомия идеального промпта</h2>
+      <div class="lesson-meta">
+        <span>📖 ~20 мин</span>
+        <span>Фаза 1, Урок 2</span>
+      </div>
+
+      <p><strong>Промпт</strong> – это то, что ты пишешь AI. Качество ответа на 80% зависит от качества промпта. Плохой промпт = плохой ответ. Это как заказ в ресторане: "принеси еду" vs "стейк medium rare с картофелем".</p>
+
+      <h3>Плохой vs хороший промпт</h3>
+      <div class="comparison">
+        <div class="comparison-bad">
+          <div class="comparison-label">❌ Плохо</div>
+          <div class="comparison-text">"Напиши сочинение про космос"</div>
+        </div>
+        <div class="comparison-good">
+          <div class="comparison-label">✅ Хорошо</div>
+          <div class="comparison-text">"Напиши сочинение для 6 класса на тему 'Почему люди хотят полететь на Марс'. 300 слов, 3 аргумента, простым языком. В конце – свой вывод"</div>
+        </div>
+      </div>
+
+      <div class="comparison">
+        <div class="comparison-bad">
+          <div class="comparison-label">❌ Плохо</div>
+          <div class="comparison-text">"Помоги с математикой"</div>
+        </div>
+        <div class="comparison-good">
+          <div class="comparison-label">✅ Хорошо</div>
+          <div class="comparison-text">"Я учусь в 6 классе. Объясни как решать уравнения вида 2x + 5 = 15. Покажи 3 примера с пошаговым решением, потом дай мне 3 задачи для самостоятельной работы"</div>
+        </div>
+      </div>
+
+      <h3>4 элемента хорошего промпта</h3>
+
+      <div class="info-block key-concept">
+        <div class="block-title">🔑 Формула РКФО</div>
+        <p><strong>Р</strong>оль – кем должен быть AI<br>
+        <strong>К</strong>онтекст – что ты знаешь / твоя ситуация<br>
+        <strong>Ф</strong>ормат – как должен выглядеть ответ<br>
+        <strong>О</strong>граничения – чего делать не надо</p>
+      </div>
+
+      <h4>Пример с формулой РКФО:</h4>
+      <div class="code-block">
+        <span class="accent">Роль:</span> Ты – репетитор по истории для 6 класса.<br><br>
+        <span class="accent">Контекст:</span> Мне нужно подготовиться к контрольной по теме<br>
+        "Древний Египет". Я знаю про пирамиды и фараонов,<br>
+        но путаюсь в датах.<br><br>
+        <span class="accent">Формат:</span> Сделай таблицу с ключевыми датами и событиями,<br>
+        потом 5 вопросов для проверки.<br><br>
+        <span class="accent">Ограничения:</span> Не пиши длинные абзацы – только факты<br>
+        и короткие объяснения.
+      </div>
+
+      <h3>Почему это работает</h3>
+      <p>AI обучен на миллиардах текстов. Когда ты даёшь ему роль "репетитор для 6 класса", он активирует паттерны из тысяч учебных материалов. Когда просишь таблицу – он структурирует информацию. Без этого он просто напишет длинный скучный текст.</p>
+
+      <h3>✅ Задания</h3>
+      <ul class="task-list" data-lesson="1-2">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Возьми любую тему из школы. Напиши плохой промпт, получи ответ. Потом перепиши по формуле РКФО и сравни</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попроси AI объяснить что-то сложное тремя способами: "как учителю", "как другу", "как пятилетнему ребёнку". Заметь разницу</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Напиши промпт для создания теста по любимому фильму/игре. Используй все 4 элемента РКФО</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Сохрани свои лучшие промпты в заметки – начни собирать "библиотеку промптов"</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('1-1')">← Назад</button>
+        <button class="btn btn-complete" id="complete-1-2" onclick="completeLesson('1-2')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('1-3')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 1-3: 5 приёмов ════════════════════ -->
+    <div class="lesson" id="lesson-1-3">
+      <span class="lesson-badge badge-practice">Практика</span>
+      <h2>5 приёмов продвинутого промптинга</h2>
+      <div class="lesson-meta">
+        <span>📖 ~25 мин</span>
+        <span>Фаза 1, Урок 3</span>
+      </div>
+
+      <p>Ты уже знаешь формулу РКФО. Теперь – пять приёмов, которые используют профессионалы.</p>
+
+      <h3>1. Few-shot (примеры)</h3>
+      <p>Покажи AI примеры того, что хочешь получить – и он повторит формат.</p>
+      <div class="code-block">
+        Переведи слова на английский в формате:<br>
+        кот → cat 🐱<br>
+        собака → dog 🐕<br><br>
+        Теперь переведи: дом, машина, школа, книга
+      </div>
+
+      <h3>2. Chain-of-thought (цепочка размышлений)</h3>
+      <p>Попроси AI думать шаг за шагом – ответы станут точнее.</p>
+      <div class="code-block">
+        <span class="comment">// Без chain-of-thought:</span><br>
+        Сколько будет 17 × 23?<br><br>
+        <span class="comment">// С chain-of-thought:</span><br>
+        Сколько будет 17 × 23? <span class="highlight">Реши пошагово,</span><br>
+        <span class="highlight">показывая каждое действие.</span>
+      </div>
+
+      <h3>3. Persona (глубокая роль)</h3>
+      <p>Не просто "ты учитель", а полный персонаж с характером.</p>
+      <div class="code-block">
+        Ты – <span class="highlight">Профессор Зельев из Хогвартса</span>.<br>
+        Объясни мне химическую реакцию соды с уксусом<br>
+        <span class="highlight">в стиле урока зельеварения</span>.<br>
+        Будь строгим, но справедливым.
+      </div>
+
+      <h3>4. Итерация (улучшение ответа)</h3>
+      <p>Не принимай первый ответ. Проси AI улучшить его.</p>
+      <div class="code-block">
+        <span class="comment">Первый запрос:</span> Напиши описание моего персонажа для игры<br><br>
+        <span class="comment">Второй:</span> <span class="highlight">Сделай описание более эпичным,</span><br>
+        <span class="highlight">добавь деталей про оружие и способности</span><br><br>
+        <span class="comment">Третий:</span> <span class="highlight">Теперь сократи до 3 предложений,</span><br>
+        <span class="highlight">оставь только самое крутое</span>
+      </div>
+
+      <h3>5. Ограничения как суперсила</h3>
+      <p>Чем больше ограничений – тем точнее результат.</p>
+      <div class="code-block">
+        Напиши рассказ про робота.<br>
+        <span class="highlight">Ограничения:</span><br>
+        – Ровно 100 слов<br>
+        – Действие в школе<br>
+        – Без насилия<br>
+        – Финал должен быть неожиданным<br>
+        – Используй диалоги
+      </div>
+
+      <div class="info-block tip">
+        <div class="block-title">💡 Секрет профессионалов</div>
+        <p>Самые крутые результаты получаются когда ты комбинируешь несколько приёмов. Например: <strong>Роль</strong> + <strong>примеры</strong> + <strong>ограничения</strong> + <strong>итерация</strong>. Чем точнее запрос – тем меньше надо переделывать.</p>
+      </div>
+
+      <h3>Почитать и посмотреть</h3>
+      <div class="resources">
+        <a class="resource-link" href="https://www.promptingguide.ai/ru" target="_blank">
+          <div class="resource-icon">📖</div>
+          <div class="resource-info">
+            <div class="resource-title">Prompt Engineering Guide (на русском)</div>
+            <div class="resource-desc">Полный гайд по промпт-инженерии – все техники с примерами</div>
+          </div>
+          <span class="resource-tag tag-article">Гайд</span>
+        </a>
+        <a class="resource-link" href="https://learnprompting.org/docs/intro" target="_blank">
+          <div class="resource-icon">🎓</div>
+          <div class="resource-info">
+            <div class="resource-title">Learn Prompting</div>
+            <div class="resource-desc">Бесплатный курс промптинга для начинающих (англ.)</div>
+          </div>
+          <span class="resource-tag tag-course">Курс</span>
+        </a>
+      </div>
+
+      <h3>✅ Задания</h3>
+      <ul class="task-list" data-lesson="1-3">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Few-shot:</strong> Придумай свой формат (например, обзоры игр) и дай AI 2 примера, попроси сделать ещё 3</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Chain-of-thought:</strong> Задай AI сложную задачу из математики или логики. Сравни ответ "просто реши" vs "реши пошагово"</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Persona:</strong> Выбери любого персонажа (из фильма, игры, книги) и попроси AI вести урок в его стиле</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Итерация:</strong> Попроси AI написать что-то, потом улучши результат 3 раза подряд. Сохрани все 4 версии</div>
+        </li>
+        <li class="task-item" data-task="4" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Комбо:</strong> Напиши один промпт, используя ВСЕ 5 приёмов одновременно. Это твой "мастер-промпт"</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('1-2')">← Назад</button>
+        <button class="btn btn-complete" id="complete-1-3" onclick="completeLesson('1-3')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('1-4')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 1-4: Промпт-челлендж ════════════════════ -->
+    <div class="lesson" id="lesson-1-4">
+      <span class="lesson-badge badge-challenge">Челлендж</span>
+      <h2>7-дневный промпт-челлендж</h2>
+      <div class="lesson-meta">
+        <span>📖 ~7 дней по 15 мин</span>
+        <span>Фаза 1, Урок 4</span>
+      </div>
+
+      <p>Неделя практики. Каждый день – одна реальная задача, которую ты решаешь с помощью AI. Используй все приёмы, которые выучил.</p>
+
+      <h3>✅ Дни челленджа</h3>
+      <ul class="task-list" data-lesson="1-4">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>День 1 – Школа:</strong> Подготовься к следующему уроку с помощью AI. Составь конспект или шпаргалку по формуле РКФО</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>День 2 – Творчество:</strong> Создай с AI короткий рассказ или стихотворение на любую тему. Итерируй минимум 3 раза</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>День 3 – Перевод:</strong> Найди интересную статью на английском. Попроси AI перевести + объяснить сложные слова</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>День 4 – Объяснение:</strong> Выбери тему, которую не понимаешь. Попроси AI объяснить через аналогию с игрой или фильмом</div>
+        </li>
+        <li class="task-item" data-task="4" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>День 5 – Планирование:</strong> Составь с AI план на выходные или план подготовки к чему-то</div>
+        </li>
+        <li class="task-item" data-task="5" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>День 6 – Дебаты:</strong> Выбери спорную тему. Попроси AI привести аргументы ЗА и ПРОТИВ. Реши сам, кто прав</div>
+        </li>
+        <li class="task-item" data-task="6" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>День 7 – Мастер-промпт:</strong> Придумай самый сложный и детальный промпт, на который способен. Удиви AI!</div>
+        </li>
+      </ul>
+
+      <div class="info-block warning">
+        <div class="block-title">⚠️ Важно</div>
+        <p>AI может ошибаться и врать уверенным голосом. Это называется <strong>"галлюцинация"</strong>. Всегда проверяй факты, даты и цифры, которые выдаёт AI. Особенно в домашке – учитель не примет оправдание "мне так ChatGPT сказал".</p>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('1-3')">← Назад</button>
+        <button class="btn btn-complete" id="complete-1-4" onclick="completeLesson('1-4')">Фаза 1 пройдена! ✓</button>
+        <button class="btn btn-primary" onclick="goTo('2-1')">Фаза 2 →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 2-1: Генерация картинок ════════════════════ -->
+    <div class="lesson" id="lesson-2-1">
+      <span class="lesson-badge badge-practice">Практика</span>
+      <h2>Генерация картинок с AI</h2>
+      <div class="lesson-meta">
+        <span>📖 ~30 мин</span>
+        <span>Фаза 2, Урок 1</span>
+      </div>
+
+      <p>AI умеет создавать картинки из текста. Ты описываешь что хочешь – а нейросеть рисует. Но тут те же правила: чем лучше промпт, тем лучше картинка.</p>
+
+      <h3>Инструменты</h3>
+      <div class="resources">
+        <a class="resource-link" href="https://www.bing.com/images/create" target="_blank">
+          <div class="resource-icon">🎨</div>
+          <div class="resource-info">
+            <div class="resource-title">DALL-E 3 (через Bing)</div>
+            <div class="resource-desc">Бесплатно, на русском, генерация в браузере</div>
+          </div>
+          <span class="resource-tag tag-tool">Бесплатно</span>
+        </a>
+        <a class="resource-link" href="https://fusionbrain.ai/editor/" target="_blank">
+          <div class="resource-icon">🎨</div>
+          <div class="resource-info">
+            <div class="resource-title">Kandinsky (Fusion Brain)</div>
+            <div class="resource-desc">Бесплатный российский генератор изображений</div>
+          </div>
+          <span class="resource-tag tag-tool">Бесплатно</span>
+        </a>
+        <a class="resource-link" href="https://lexica.art" target="_blank">
+          <div class="resource-icon">🔍</div>
+          <div class="resource-info">
+            <div class="resource-title">Lexica.art</div>
+            <div class="resource-desc">Поиск по AI-картинкам – смотри чужие промпты и учись</div>
+          </div>
+          <span class="resource-tag tag-tool">Вдохновение</span>
+        </a>
+      </div>
+
+      <h3>Формула промпта для картинок</h3>
+      <div class="code-block">
+        <span class="accent">[Что]</span> + <span class="accent">[Стиль]</span> + <span class="accent">[Настроение]</span> + <span class="accent">[Детали]</span><br><br>
+        <span class="comment">Примеры:</span><br>
+        Робот-повар готовит суп, <span class="highlight">в стиле аниме</span>,<br>
+        <span class="highlight">тёплые цвета, уютная кухня</span>, детализация высокая<br><br>
+        Город будущего ночью, <span class="highlight">киберпанк</span>,<br>
+        <span class="highlight">неоновые огни, дождь</span>, вид сверху, 4K
+      </div>
+
+      <h3>Стили, которые стоит попробовать</h3>
+      <ul>
+        <li><strong>Фотореализм</strong> – "photo realistic, 8K, detailed"</li>
+        <li><strong>Аниме</strong> – "anime style, Studio Ghibli"</li>
+        <li><strong>Пиксель-арт</strong> – "pixel art, 16-bit, retro game"</li>
+        <li><strong>Живопись</strong> – "oil painting, impressionist"</li>
+        <li><strong>3D-рендер</strong> – "3D render, Pixar style, soft lighting"</li>
+        <li><strong>Комикс</strong> – "comic book style, bold lines, speech bubbles"</li>
+      </ul>
+
+      <h3>✅ Задания</h3>
+      <ul class="task-list" data-lesson="2-1">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Сгенерируй 3 картинки одного и того же объекта в разных стилях (аниме, фотореализм, пиксель-арт)</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Зайди на Lexica.art, найди 5 крутых картинок. Прочитай их промпты. Что общего?</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Создай аватарку для себя с помощью AI. Итерируй, пока не понравится</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Сделай серию из 4 картинок, которые рассказывают историю (как комикс)</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('1-4')">← Назад</button>
+        <button class="btn btn-complete" id="complete-2-1" onclick="completeLesson('2-1')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('2-2')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 2-2: AI для текстов ════════════════════ -->
+    <div class="lesson" id="lesson-2-2">
+      <span class="lesson-badge badge-practice">Практика</span>
+      <h2>AI для работы с текстом</h2>
+      <div class="lesson-meta">
+        <span>📖 ~20 мин</span>
+        <span>Фаза 2, Урок 2</span>
+      </div>
+
+      <p>Текст – это главная суперсила AI. Не просто "напиши сочинение", а целый набор инструментов: переписать, сократить, изменить стиль, перевести, проанализировать.</p>
+
+      <h3>Что AI умеет с текстом</h3>
+
+      <h4>Трансформация стиля</h4>
+      <div class="code-block">
+        Перепиши этот текст:<br>
+        "Вода при 100 градусах переходит в газообразное состояние"<br><br>
+        Версии:<br>
+        1. <span class="highlight">Как рэпер</span><br>
+        2. <span class="highlight">Как профессор в Хогвартсе</span><br>
+        3. <span class="highlight">Как блогер в TikTok</span><br>
+        4. <span class="highlight">Как пират</span>
+      </div>
+
+      <h4>Суммаризация (краткое содержание)</h4>
+      <div class="code-block">
+        Вот текст из учебника: [вставь текст]<br><br>
+        Сделай:<br>
+        1. <span class="highlight">Краткое содержание в 3 предложениях</span><br>
+        2. <span class="highlight">5 ключевых фактов (буллетами)</span><br>
+        3. <span class="highlight">1 вопрос, чтобы проверить понимание</span>
+      </div>
+
+      <h4>Перевод + адаптация</h4>
+      <div class="code-block">
+        Переведи на русский, но <span class="highlight">не дословно</span>.<br>
+        Адаптируй примеры для российского школьника.<br>
+        Сложные слова выдели <span class="highlight">жирным</span> и объясни в скобках.
+      </div>
+
+      <h4>Анализ текста</h4>
+      <div class="code-block">
+        Проанализируй мой текст:<br>
+        [вставь текст]<br><br>
+        Оцени:<br>
+        – <span class="highlight">Грамматические ошибки</span> (исправь)<br>
+        – <span class="highlight">Стиль</span> (формальный/неформальный)<br>
+        – <span class="highlight">Читаемость</span> (1-10, где 10 – легко читается)<br>
+        – <span class="highlight">3 совета</span> как улучшить
+      </div>
+
+      <h3>✅ Задания</h3>
+      <ul class="task-list" data-lesson="2-2">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Возьми параграф из учебника. Попроси AI пересказать его "как будто объясняешь другу в чате"</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Напиши короткий текст (5–7 предложений). Попроси AI проанализировать и улучшить. Сравни до/после</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Найди статью на английском по интересной теме. Попроси AI: перевод + объяснение 10 новых слов</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попроси AI написать один абзац в стиле 5 разных писателей/персонажей. Угадай кто есть кто</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('2-1')">← Назад</button>
+        <button class="btn btn-complete" id="complete-2-2" onclick="completeLesson('2-2')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('2-3')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 2-3: AI для учёбы ════════════════════ -->
+    <div class="lesson" id="lesson-2-3">
+      <span class="lesson-badge badge-practice">Практика</span>
+      <h2>AI как личный репетитор</h2>
+      <div class="lesson-meta">
+        <span>📖 ~20 мин</span>
+        <span>Фаза 2, Урок 3</span>
+      </div>
+
+      <p>У тебя теперь есть <strong>бесплатный репетитор по любому предмету, доступный 24/7</strong>. Но его нужно правильно использовать – не чтобы списывать, а чтобы понимать.</p>
+
+      <div class="info-block warning">
+        <div class="block-title">⚠️ Правило #1</div>
+        <p><strong>AI – это репетитор, не шпаргалка.</strong> Если ты просто копируешь ответы AI – ты ничему не учишься. Просить AI ОБЪЯСНИТЬ как решить задачу – полезно. Просить AI РЕШИТЬ задачу за тебя – бесполезно.</p>
+      </div>
+
+      <h3>Шаблоны для учёбы</h3>
+
+      <h4>Объяснение сложной темы</h4>
+      <div class="code-block">
+        Я ученик 6 класса. Объясни мне [тему].<br>
+        – <span class="highlight">Начни с простой аналогии из реальной жизни</span><br>
+        – <span class="highlight">Потом дай определение простыми словами</span><br>
+        – <span class="highlight">Покажи 2 примера</span><br>
+        – <span class="highlight">В конце – проверочный вопрос</span><br>
+        – Если я отвечу неправильно – объясни ещё раз по-другому
+      </div>
+
+      <h4>Подготовка к контрольной</h4>
+      <div class="code-block">
+        Тема контрольной: [тема]<br>
+        Предмет: [предмет], 6 класс<br><br>
+        Сделай:<br>
+        1. <span class="highlight">Список ключевых понятий</span> (с определениями)<br>
+        2. <span class="highlight">10 возможных вопросов</span> (от простых к сложным)<br>
+        3. <span class="highlight">3 типичные ловушки</span>, на которые попадаются ученики<br>
+        4. <span class="highlight">Мини-шпаргалку</span> на 1 страницу
+      </div>
+
+      <h4>Разбор ошибки</h4>
+      <div class="code-block">
+        Я решил задачу так: [твоё решение]<br>
+        Правильный ответ: [ответ из учебника]<br><br>
+        <span class="highlight">Где я ошибся? Объясни мою ошибку</span><br>
+        <span class="highlight">и покажи правильный ход решения.</span><br>
+        Потом дай похожую задачу, чтобы я попробовал снова.
+      </div>
+
+      <h3>Метод Фейнмана с AI</h3>
+      <p>Ричард Фейнман (знаменитый физик) говорил: если не можешь объяснить что-то простыми словами – значит не понимаешь. Используй AI для этого:</p>
+      <div class="code-block">
+        Я попробую объяснить тебе [тему] своими словами.<br>
+        Ты слушай и скажи:<br>
+        – <span class="highlight">Где я прав</span><br>
+        – <span class="highlight">Где я ошибаюсь</span><br>
+        – <span class="highlight">Что я упустил</span><br><br>
+        Вот моё объяснение: [...]
+      </div>
+
+      <h3>✅ Задания</h3>
+      <ul class="task-list" data-lesson="2-3">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Выбери тему, которая даётся тяжело. Попроси AI объяснить через аналогию с игрой (Minecraft, Roblox и т.д.)</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попробуй метод Фейнмана: объясни AI любую тему своими словами, получи обратную связь</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Создай себе тест по любому школьному предмету. Ответь на вопросы. Попроси AI проверить</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попроси AI стать твоим "тренером по английскому" – провести 10-минутный урок с диалогами</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('2-2')">← Назад</button>
+        <button class="btn btn-complete" id="complete-2-3" onclick="completeLesson('2-3')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('2-4')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 2-4: Проект – свой гайд ════════════════════ -->
+    <div class="lesson" id="lesson-2-4">
+      <span class="lesson-badge badge-project">Проект</span>
+      <h2>Проект: создай свой AI-гайд</h2>
+      <div class="lesson-meta">
+        <span>📖 ~60 мин</span>
+        <span>Фаза 2, Финальный проект</span>
+      </div>
+
+      <p>Пора создать что-то, чем можно поделиться. Твой первый AI-проект: <strong>гайд на тему, в которой ты разбираешься</strong> – целиком сделанный с помощью AI.</p>
+
+      <h3>Что делаем</h3>
+      <p>Выбери тему, в которой ты шаришь (игра, хобби, школьный предмет, технологии). Создай полноценный гайд:</p>
+      <ul>
+        <li>Текст – написан с AI, отредактирован тобой</li>
+        <li>Картинки – сгенерированы AI</li>
+        <li>Структура – продумана совместно с AI</li>
+      </ul>
+
+      <h3>✅ Шаги проекта</h3>
+      <ul class="task-list" data-lesson="2-4">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Шаг 1:</strong> Выбери тему и попроси AI помочь составить план гайда (оглавление из 5–7 разделов)</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Шаг 2:</strong> Напиши каждый раздел с помощью AI. Используй роль "эксперт по [теме]" + свой формат</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Шаг 3:</strong> Сгенерируй 3–5 картинок для гайда (обложку + иллюстрации)</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Шаг 4:</strong> Перечитай всё и исправь то, что AI написал не так (ты же эксперт в теме!)</div>
+        </li>
+        <li class="task-item" data-task="4" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Шаг 5:</strong> Покажи гайд другу или родителям. Спроси что можно улучшить</div>
+        </li>
+      </ul>
+
+      <div class="info-block tip">
+        <div class="block-title">💡 Идеи для гайда</div>
+        <p>– "Как начать играть в [игру]: полный гайд для новичков"<br>
+        – "10 лайфхаков для школы, о которых ты не знал"<br>
+        – "Гид по [город/район]: крутые места для подростков"<br>
+        – "Как собрать крутой [что-то] за 500 рублей"<br>
+        – "Объясняю [сложную тему] простым языком"</p>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('2-3')">← Назад</button>
+        <button class="btn btn-complete" id="complete-2-4" onclick="completeLesson('2-4')">Фаза 2 пройдена! ✓</button>
+        <button class="btn btn-primary" onclick="goTo('3-1')">Фаза 3 →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 3-1: Python + AI ════════════════════ -->
+    <div class="lesson" id="lesson-3-1">
+      <span class="lesson-badge badge-theory">Теория + Практика</span>
+      <h2>Python – язык, на котором говорят с AI</h2>
+      <div class="lesson-meta">
+        <span>📖 ~30 мин</span>
+        <span>Фаза 3, Урок 1</span>
+      </div>
+
+      <p>Программирование – это не "сложная штука для гениев". Это <strong>способ разговаривать с компьютером</strong>. А с AI программировать стало в 10 раз проще – он пишет код за тебя, а ты говоришь ему что делать.</p>
+
+      <h3>Почему Python?</h3>
+      <ul>
+        <li>Самый простой для начала – читается почти как английский</li>
+        <li>99% AI-проектов написаны на Python</li>
+        <li>Огромное сообщество – любой вопрос уже кто-то решил</li>
+      </ul>
+
+      <h3>Где писать код (без установки)</h3>
+      <div class="resources">
+        <a class="resource-link" href="https://replit.com" target="_blank">
+          <div class="resource-icon">💻</div>
+          <div class="resource-info">
+            <div class="resource-title">Replit</div>
+            <div class="resource-desc">Пишешь код прямо в браузере, ничего не устанавливая. Есть встроенный AI</div>
+          </div>
+          <span class="resource-tag tag-tool">Бесплатно</span>
+        </a>
+        <a class="resource-link" href="https://colab.research.google.com" target="_blank">
+          <div class="resource-icon">📓</div>
+          <div class="resource-info">
+            <div class="resource-title">Google Colab</div>
+            <div class="resource-desc">Python-тетрадки от Google. Бесплатно, мощно, прямо в браузере</div>
+          </div>
+          <span class="resource-tag tag-tool">Бесплатно</span>
+        </a>
+      </div>
+
+      <h3>Твои первые строки кода</h3>
+      <p>Открой Replit, создай новый Python-проект и набери:</p>
+      <div class="code-block">
+        <span class="comment"># Моя первая программа</span><br>
+        <span class="accent">name</span> = input(<span class="highlight">"Как тебя зовут? "</span>)<br>
+        <span class="accent">age</span> = int(input(<span class="highlight">"Сколько тебе лет? "</span>))<br><br>
+        print(f<span class="highlight">"Привет, {name}!"</span>)<br>
+        print(f<span class="highlight">"Через 10 лет тебе будет {age + 10}"</span>)<br><br>
+        <span class="accent">if</span> age >= 12:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="highlight">"Ты уже можешь учить AI!"</span>)<br>
+        <span class="accent">else</span>:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="highlight">"Ещё немного подрасти :)"</span>)
+      </div>
+
+      <h3>Как AI помогает программировать</h3>
+      <p>Тебе не нужно запоминать синтаксис – AI знает его наизусть. Твоя задача – <strong>описать что хочешь сделать</strong>.</p>
+      <div class="code-block">
+        <span class="comment">Промпт для ChatGPT/Claude:</span><br><br>
+        Я только начинаю учить Python. Напиши программу,<br>
+        которая спрашивает у пользователя 5 слов, а потом<br>
+        сортирует их по алфавиту и выводит.<br><br>
+        <span class="highlight">Объясни каждую строку комментарием.</span><br>
+        <span class="highlight">Используй только базовые конструкции</span><br>
+        <span class="highlight">(input, print, list, sort).</span>
+      </div>
+
+      <h3>✅ Задания</h3>
+      <ul class="task-list" data-lesson="3-1">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Зарегистрируйся на Replit. Создай Python-проект. Запусти код "Привет" из урока</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попроси AI написать калькулятор (сложение, вычитание, умножение, деление). Разбери каждую строку</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попроси AI написать игру "Угадай число" (компьютер загадывает от 1 до 100, ты угадываешь)</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Сломай одну строку в коде (удали или измени). Попроси AI найти и объяснить ошибку</div>
+        </li>
+      </ul>
+
+      <div class="resources">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=kqtD5dpn9C8" target="_blank">
+          <div class="resource-icon">🎬</div>
+          <div class="resource-info">
+            <div class="resource-title">Python за 1 час (для начинающих)</div>
+            <div class="resource-desc">Programming with Mosh – лучшее введение в Python (англ., субтитры)</div>
+          </div>
+          <span class="resource-tag tag-video">Видео</span>
+        </a>
+        <a class="resource-link" href="https://pythontutor.com" target="_blank">
+          <div class="resource-icon">👁</div>
+          <div class="resource-info">
+            <div class="resource-title">Python Tutor</div>
+            <div class="resource-desc">Визуализирует выполнение кода шаг за шагом – видишь что происходит</div>
+          </div>
+          <span class="resource-tag tag-tool">Визуализация</span>
+        </a>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('2-4')">← Назад</button>
+        <button class="btn btn-complete" id="complete-3-1" onclick="completeLesson('3-1')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('3-2')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 3-2: Первая программа ════════════════════ -->
+    <div class="lesson" id="lesson-3-2">
+      <span class="lesson-badge badge-project">Проект</span>
+      <h2>Проект: Quiz-игра</h2>
+      <div class="lesson-meta">
+        <span>📖 ~45 мин</span>
+        <span>Фаза 3, Урок 2</span>
+      </div>
+
+      <p>Сейчас ты с помощью AI создашь полноценную программу – викторину (quiz). Ты будешь говорить AI что делать, а он будет писать код. Но каждую строку ты должен понимать.</p>
+
+      <h3>Что будем строить</h3>
+      <p>Программа-викторина, которая:</p>
+      <ul>
+        <li>Задаёт вопросы по выбранной теме</li>
+        <li>Принимает ответы</li>
+        <li>Считает очки</li>
+        <li>Показывает результат в конце</li>
+      </ul>
+
+      <h3>Процесс</h3>
+      <div class="code-block">
+        <span class="comment">Шаг 1: Попроси AI сделать скелет</span><br><br>
+        Напиши на Python квиз-игру.<br>
+        – <span class="highlight">5 вопросов с 4 вариантами ответа каждый</span><br>
+        – <span class="highlight">Тема: [твоя тема]</span><br>
+        – <span class="highlight">Подсчёт очков</span><br>
+        – <span class="highlight">В конце – оценка (0-2: плохо, 3-4: нормально, 5: отлично)</span><br>
+        – <span class="highlight">Объясни каждую конструкцию комментарием</span>
+      </div>
+
+      <div class="code-block">
+        <span class="comment">Шаг 2: Попроси добавить фичи</span><br><br>
+        Добавь:<br>
+        – <span class="highlight">Таймер на каждый вопрос (10 секунд)</span><br>
+        – <span class="highlight">Цветной текст в консоли</span><br>
+        – <span class="highlight">Возможность играть заново</span><br>
+        – <span class="highlight">Сохранение рекорда в файл</span>
+      </div>
+
+      <div class="info-block key-concept">
+        <div class="block-title">🔑 Правило программирования с AI</div>
+        <p><strong>Не копируй бездумно.</strong> После каждого блока кода спроси AI: "Объясни что делает строка [номер]". Если не понимаешь объяснение – спроси "объясни проще". Цель не программа, а <strong>твоё понимание</strong>.</p>
+      </div>
+
+      <h3>✅ Шаги проекта</h3>
+      <ul class="task-list" data-lesson="3-2">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Шаг 1:</strong> Выбери тему для квиза. Попроси AI создать базовую версию (5 вопросов)</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Шаг 2:</strong> Запусти код в Replit. Исправь ошибки (если есть) с помощью AI</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Шаг 3:</strong> Объясни своими словами что делает каждая часть программы (спроси AI проверить)</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Шаг 4:</strong> Добавь минимум 1 новую фичу (таймер, цвета, сохранение рекорда)</div>
+        </li>
+        <li class="task-item" data-task="4" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Шаг 5:</strong> Поделись ссылкой на Replit с другом – пусть сыграет!</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('3-1')">← Назад</button>
+        <button class="btn btn-complete" id="complete-3-2" onclick="completeLesson('3-2')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('3-3')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 3-3: Телеграм-бот ════════════════════ -->
+    <div class="lesson" id="lesson-3-3">
+      <span class="lesson-badge badge-project">Проект</span>
+      <h2>Проект: свой Телеграм-бот</h2>
+      <div class="lesson-meta">
+        <span>📖 ~60 мин</span>
+        <span>Фаза 3, Урок 3</span>
+      </div>
+
+      <p>Это твой первый настоящий продукт – бот в Telegram, которым могут пользоваться другие люди. У папы тоже есть свой бот (@My_drobot_bot) – скоро у тебя будет свой.</p>
+
+      <h3>План</h3>
+      <ol>
+        <li>Создать бота через @BotFather в Telegram</li>
+        <li>Написать код на Python (с помощью AI)</li>
+        <li>Запустить на Replit (бесплатно, 24/7)</li>
+      </ol>
+
+      <h3>Шаг 1: Создание бота</h3>
+      <div class="code-block">
+        1. Открой Telegram, найди <span class="accent">@BotFather</span><br>
+        2. Отправь <span class="highlight">/newbot</span><br>
+        3. Дай имя (например: "Andrey AI Bot")<br>
+        4. Дай username (например: andrey_ai_bot)<br>
+        5. Скопируй <span class="highlight">API токен</span> – это ключ к твоему боту
+      </div>
+
+      <h3>Шаг 2: Код</h3>
+      <p>Попроси AI написать бота:</p>
+      <div class="code-block">
+        Напиши Telegram-бота на Python (библиотека python-telegram-bot).<br><br>
+        Бот должен:<br>
+        – <span class="highlight">Отвечать на /start приветствием</span><br>
+        – <span class="highlight">На команду /joke рассказывать случайный анекдот</span><br>
+        – <span class="highlight">На команду /quiz начинать мини-викторину</span><br>
+        – <span class="highlight">На любое текстовое сообщение отвечать эхом</span><br><br>
+        Объясни каждую часть кода.<br>
+        Используй python-telegram-bot версии 20+.
+      </div>
+
+      <div class="info-block tip">
+        <div class="block-title">💡 Идеи для бота</div>
+        <p>– Бот-переводчик (отправляешь текст – получаешь перевод)<br>
+        – Бот-помощник по домашке (подсказки, не ответы!)<br>
+        – Бот-генератор мемов (текст → картинка)<br>
+        – Бот-ежедневник (напоминания, списки дел)<br>
+        – Бот-рандомайзер (случайный фильм, игра, песня)</p>
+      </div>
+
+      <h3>✅ Шаги проекта</h3>
+      <ul class="task-list" data-lesson="3-3">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Создай бота через @BotFather, получи токен</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попроси AI написать базовый код бота. Разбери каждую часть</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Запусти бота в Replit. Протестируй все команды</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Добавь минимум 2 своих команды (своя идея!)</div>
+        </li>
+        <li class="task-item" data-task="4" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Отправь ссылку на бота другу – пусть протестирует</div>
+        </li>
+      </ul>
+
+      <div class="resources">
+        <a class="resource-link" href="https://core.telegram.org/bots" target="_blank">
+          <div class="resource-icon">📖</div>
+          <div class="resource-info">
+            <div class="resource-title">Telegram Bot API – документация</div>
+            <div class="resource-desc">Официальный гайд – полезно для продвинутых фич</div>
+          </div>
+          <span class="resource-tag tag-article">Документация</span>
+        </a>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('3-2')">← Назад</button>
+        <button class="btn btn-complete" id="complete-3-3" onclick="completeLesson('3-3')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('3-4')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 3-4: Читаем чужой код ════════════════════ -->
+    <div class="lesson" id="lesson-3-4">
+      <span class="lesson-badge badge-practice">Практика</span>
+      <h2>Читаем и понимаем чужой код</h2>
+      <div class="lesson-meta">
+        <span>📖 ~30 мин</span>
+        <span>Фаза 3, Урок 4</span>
+      </div>
+
+      <p>Профессиональный разработчик 70% времени <strong>читает</strong> код и только 30% <strong>пишет</strong>. Умение разбирать чужой код – ключевой навык.</p>
+
+      <h3>Метод</h3>
+      <div class="code-block">
+        <span class="comment">Копируй любой код в AI и спрашивай:</span><br><br>
+        Вот код: [код]<br><br>
+        1. <span class="highlight">Что этот код делает? (в 1 предложении)</span><br>
+        2. <span class="highlight">Объясни построчно</span><br>
+        3. <span class="highlight">Какие есть баги или проблемы?</span><br>
+        4. <span class="highlight">Как бы ты его улучшил?</span>
+      </div>
+
+      <h3>Где найти код для разбора</h3>
+      <div class="resources">
+        <a class="resource-link" href="https://github.com/trending/python" target="_blank">
+          <div class="resource-icon">🐙</div>
+          <div class="resource-info">
+            <div class="resource-title">GitHub Trending (Python)</div>
+            <div class="resource-desc">Популярные Python-проекты – открой любой и читай код</div>
+          </div>
+          <span class="resource-tag tag-tool">Код</span>
+        </a>
+        <a class="resource-link" href="https://www.codewars.com" target="_blank">
+          <div class="resource-icon">⚔️</div>
+          <div class="resource-info">
+            <div class="resource-title">Codewars</div>
+            <div class="resource-desc">Задачи по программированию – после решения видишь чужие решения</div>
+          </div>
+          <span class="resource-tag tag-tool">Практика</span>
+        </a>
+      </div>
+
+      <h3>✅ Задания</h3>
+      <ul class="task-list" data-lesson="3-4">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Найди на GitHub любой Python-файл до 50 строк. Попроси AI объяснить его построчно</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Зарегистрируйся на Codewars. Реши 3 задачи уровня 8 kyu (самый лёгкий). AI может подсказывать</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Возьми код своего квиза или бота. Попроси AI найти в нём 3 способа улучшить</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попроси AI написать код с 3 специально спрятанными багами. Найди их сам!</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('3-3')">← Назад</button>
+        <button class="btn btn-complete" id="complete-3-4" onclick="completeLesson('3-4')">Фаза 3 пройдена! ✓</button>
+        <button class="btn btn-primary" onclick="goTo('4-1')">Фаза 4 →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 4-1: Чат vs Агент ════════════════════ -->
+    <div class="lesson" id="lesson-4-1">
+      <span class="lesson-badge badge-theory">Теория</span>
+      <h2>Чат vs Агент: в чём разница</h2>
+      <div class="lesson-meta">
+        <span>📖 ~20 мин</span>
+        <span>Фаза 4, Урок 1</span>
+      </div>
+
+      <p>До сих пор ты общался с AI в режиме <strong>чата</strong>: спросил – получил ответ. Но есть другой уровень: <strong>AI-агент</strong>, который сам выполняет задачи.</p>
+
+      <h3>Разница</h3>
+      <div class="comparison">
+        <div class="comparison-bad">
+          <div class="comparison-label">💬 Чат (ChatGPT)</div>
+          <div class="comparison-text">Ты спрашиваешь → AI отвечает. Каждый раз заново. AI ничего не делает в реальном мире – только текст</div>
+        </div>
+        <div class="comparison-good">
+          <div class="comparison-label">🤖 Агент</div>
+          <div class="comparison-text">Ты даёшь цель → AI сам строит план → выполняет шаги → использует инструменты → выдаёт результат</div>
+        </div>
+      </div>
+
+      <h3>Пример из жизни</h3>
+      <p><strong>Чат:</strong> "Какая погода в Краснодаре?" → AI <em>говорит</em> что не знает текущую погоду.</p>
+      <p><strong>Агент:</strong> "Какая погода в Краснодаре?" → AI <em>открывает</em> сайт погоды → <em>читает</em> данные → <em>отвечает</em> точную температуру.</p>
+
+      <h3>Как работает папин Claude Code</h3>
+      <p>Claude Code, которым пользуется папа – это агент. Он может:</p>
+      <ul>
+        <li>Читать и редактировать файлы на компьютере</li>
+        <li>Запускать программы и скрипты</li>
+        <li>Отправлять сообщения в Telegram и WhatsApp</li>
+        <li>Проверять почту и календарь</li>
+        <li>Управлять задачами в Todoist</li>
+        <li>Создавать презентации, отчёты, сайты</li>
+      </ul>
+
+      <div class="info-block key-concept">
+        <div class="block-title">🔑 Формула агента</div>
+        <p><strong>Агент = LLM + Инструменты + Память + Логика</strong></p>
+        <p>LLM (мозг) думает, инструменты (руки) делают, память (заметки) хранит контекст, логика (план) направляет.</p>
+      </div>
+
+      <h3>Инструменты (Tools)</h3>
+      <p>Инструмент – это любое действие, которое агент может выполнить:</p>
+      <ul>
+        <li><strong>Поиск в интернете</strong> – найти информацию</li>
+        <li><strong>Выполнение кода</strong> – запустить программу</li>
+        <li><strong>API-вызовы</strong> – получить погоду, курс валют, новости</li>
+        <li><strong>Отправка сообщений</strong> – написать в чат, отправить email</li>
+        <li><strong>Работа с файлами</strong> – читать, создавать, редактировать</li>
+      </ul>
+
+      <h3>✅ Задания</h3>
+      <ul class="task-list" data-lesson="4-1">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попроси ChatGPT: "Какая сейчас погода в Краснодаре?" – заметь, что он не может ответить точно</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попроси папу показать как работает Claude Code – как он отправляет сообщения и создаёт файлы</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Нарисуй схему (на бумаге или в AI): Цель → План → Шаг 1 → Инструмент → Шаг 2 → Результат</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Придумай 3 задачи, которые чат НЕ может решить, но агент – может</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('3-4')">← Назад</button>
+        <button class="btn btn-complete" id="complete-4-1" onclick="completeLesson('4-1')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('4-2')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 4-2: API и интеграции ════════════════════ -->
+    <div class="lesson" id="lesson-4-2">
+      <span class="lesson-badge badge-theory">Теория + Практика</span>
+      <h2>API – как программы разговаривают друг с другом</h2>
+      <div class="lesson-meta">
+        <span>📖 ~30 мин</span>
+        <span>Фаза 4, Урок 2</span>
+      </div>
+
+      <p><strong>API (Application Programming Interface)</strong> – это способ, которым программы общаются между собой. Как официант в ресторане: ты делаешь заказ (запрос), он несёт на кухню (сервер), кухня готовит (обрабатывает), официант возвращает блюдо (ответ).</p>
+
+      <h3>Пример: получаем погоду</h3>
+      <div class="code-block">
+        <span class="comment"># Этот код спрашивает погоду у сервера</span><br>
+        <span class="accent">import</span> requests<br><br>
+        <span class="comment"># Делаем "заказ" серверу погоды</span><br>
+        response = requests.get(<br>
+        &nbsp;&nbsp;<span class="highlight">"https://wttr.in/Krasnodar?format=3"</span><br>
+        )<br><br>
+        <span class="comment"># Получаем "блюдо" – ответ</span><br>
+        print(response.text)<br>
+        <span class="comment"># → Krasnodar: ⛅ +18°C</span>
+      </div>
+
+      <h3>Бесплатные API для экспериментов</h3>
+      <div class="resources">
+        <a class="resource-link" href="https://wttr.in/:help" target="_blank">
+          <div class="resource-icon">🌤</div>
+          <div class="resource-info">
+            <div class="resource-title">wttr.in</div>
+            <div class="resource-desc">Погода – без регистрации, просто URL</div>
+          </div>
+          <span class="resource-tag tag-tool">API</span>
+        </a>
+        <a class="resource-link" href="https://api.chucknorris.io" target="_blank">
+          <div class="resource-icon">😂</div>
+          <div class="resource-info">
+            <div class="resource-title">Chuck Norris API</div>
+            <div class="resource-desc">Случайные шутки – отличный первый API для практики</div>
+          </div>
+          <span class="resource-tag tag-tool">API</span>
+        </a>
+        <a class="resource-link" href="https://pokeapi.co" target="_blank">
+          <div class="resource-icon">⚡</div>
+          <div class="resource-info">
+            <div class="resource-title">PokéAPI</div>
+            <div class="resource-desc">Данные о покемонах – огромный бесплатный API</div>
+          </div>
+          <span class="resource-tag tag-tool">API</span>
+        </a>
+      </div>
+
+      <h3>✅ Задания</h3>
+      <ul class="task-list" data-lesson="4-2">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Открой в браузере: wttr.in/Krasnodar?format=3 – это API-запрос! Попробуй другие города</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попроси AI написать Python-скрипт, который берёт случайную шутку с Chuck Norris API и выводит</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Добавь API погоды в своего Телеграм-бота: команда /weather показывает погоду</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попроси AI объяснить: что такое JSON и зачем он нужен (подсказка: это формат, в котором API отвечает)</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('4-1')">← Назад</button>
+        <button class="btn btn-complete" id="complete-4-2" onclick="completeLesson('4-2')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('4-3')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 4-3: No-code автоматизации ════════════════════ -->
+    <div class="lesson" id="lesson-4-3">
+      <span class="lesson-badge badge-practice">Практика</span>
+      <h2>Автоматизации без кода</h2>
+      <div class="lesson-meta">
+        <span>📖 ~30 мин</span>
+        <span>Фаза 4, Урок 3</span>
+      </div>
+
+      <p>Не всегда нужно писать код. Есть инструменты, где ты <strong>визуально соединяешь блоки</strong> и создаёшь автоматизации – как конструктор LEGO, но для программ.</p>
+
+      <h3>Инструменты</h3>
+      <div class="resources">
+        <a class="resource-link" href="https://www.make.com" target="_blank">
+          <div class="resource-icon">⚡</div>
+          <div class="resource-info">
+            <div class="resource-title">Make.com (бывший Integromat)</div>
+            <div class="resource-desc">Визуальный конструктор автоматизаций. 1000 операций/мес бесплатно</div>
+          </div>
+          <span class="resource-tag tag-tool">No-code</span>
+        </a>
+        <a class="resource-link" href="https://zapier.com" target="_blank">
+          <div class="resource-icon">🔗</div>
+          <div class="resource-info">
+            <div class="resource-title">Zapier</div>
+            <div class="resource-desc">Проще, чем Make. "Когда X – делай Y". 100 задач/мес бесплатно</div>
+          </div>
+          <span class="resource-tag tag-tool">No-code</span>
+        </a>
+        <a class="resource-link" href="https://n8n.io" target="_blank">
+          <div class="resource-icon">🔧</div>
+          <div class="resource-info">
+            <div class="resource-title">n8n</div>
+            <div class="resource-desc">Open-source, можно запустить локально. Продвинутый</div>
+          </div>
+          <span class="resource-tag tag-tool">Продвинутый</span>
+        </a>
+      </div>
+
+      <h3>Что можно автоматизировать</h3>
+      <ul>
+        <li><strong>Telegram → Google Sheets:</strong> каждое сообщение из чата сохраняется в таблицу</li>
+        <li><strong>Email → Telegram:</strong> важные письма пересылаются в бот</li>
+        <li><strong>Расписание → Напоминание:</strong> каждое утро бот присылает расписание уроков</li>
+        <li><strong>RSS → AI → Telegram:</strong> новости по теме → AI делает краткое содержание → отправляет тебе</li>
+      </ul>
+
+      <h3>✅ Задания</h3>
+      <ul class="task-list" data-lesson="4-3">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Зарегистрируйся на Make.com. Пройди вводный tutorial (5 мин)</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Создай простую автоматизацию: что-то → Telegram (например, погода каждое утро)</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Добавь в цепочку AI-модуль (ChatGPT через Make): входные данные → AI обрабатывает → результат</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Придумай автоматизацию, которая реально полезна тебе в жизни. Построй её</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('4-2')">← Назад</button>
+        <button class="btn btn-complete" id="complete-4-3" onclick="completeLesson('4-3')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('4-4')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 4-4: Проект – мой агент ════════════════════ -->
+    <div class="lesson" id="lesson-4-4">
+      <span class="lesson-badge badge-project">Финальный проект фазы</span>
+      <h2>Проект: мой AI-агент</h2>
+      <div class="lesson-meta">
+        <span>📖 ~90 мин</span>
+        <span>Фаза 4, Финальный проект</span>
+      </div>
+
+      <p>Собираем всё вместе. Твоя задача – создать Telegram-бота, который ведёт себя как <strong>агент</strong>: не просто отвечает, а выполняет задачи, используя инструменты.</p>
+
+      <h3>Минимальная версия</h3>
+      <p>Бот, который:</p>
+      <ul>
+        <li>Принимает задачу от пользователя</li>
+        <li>Использует хотя бы 1 API (погода, новости, переводчик)</li>
+        <li>Обрабатывает данные</li>
+        <li>Возвращает осмысленный результат</li>
+      </ul>
+
+      <h3>Продвинутая версия</h3>
+      <ul>
+        <li>Помнит контекст разговора (последние 5 сообщений)</li>
+        <li>Использует 2+ API</li>
+        <li>Может отправить AI-генерированный ответ (через OpenAI API или аналог)</li>
+      </ul>
+
+      <h3>✅ Шаги проекта</h3>
+      <ul class="task-list" data-lesson="4-4">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Планирование:</strong> Опиши AI что хочешь построить. Попроси составить план из 5 шагов</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Скелет:</strong> Создай базового бота с 1 командой и 1 API-вызовом</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Расширение:</strong> Добавь 2-ю команду и 2-й API. Тестируй каждую фичу</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Полировка:</strong> Добавь обработку ошибок ("Не получилось, попробуй ещё раз")</div>
+        </li>
+        <li class="task-item" data-task="4" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Демо:</strong> Покажи бота папе и объясни как он работает (архитектура, API, логика)</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('4-3')">← Назад</button>
+        <button class="btn btn-complete" id="complete-4-4" onclick="completeLesson('4-4')">Фаза 4 пройдена! ✓</button>
+        <button class="btn btn-primary" onclick="goTo('5-1')">Фаза 5 →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 5-1: Как устроен LLM ════════════════════ -->
+    <div class="lesson" id="lesson-5-1">
+      <span class="lesson-badge badge-theory">Теория</span>
+      <h2>Как устроен LLM внутри</h2>
+      <div class="lesson-meta">
+        <span>📖 ~25 мин</span>
+        <span>Фаза 5, Урок 1</span>
+      </div>
+
+      <p>Ты уже используешь AI как профи. Теперь пора понять, что происходит "под капотом".</p>
+
+      <h3>Токены – атомы языка</h3>
+      <p>AI не видит буквы или слова – он видит <strong>токены</strong>. Токен – это кусочек слова:</p>
+      <div class="code-block">
+        "Привет, как дела?" → <span class="highlight">["При", "вет", ",", " как", " дела", "?"]</span><br><br>
+        Слово "нейросеть" → <span class="highlight">["ней", "ро", "сеть"]</span> = 3 токена<br>
+        Слово "cat" → <span class="highlight">["cat"]</span> = 1 токен
+      </div>
+      <p>Именно поэтому AI может делать ошибки в подсчёте букв – он не "видит" отдельные буквы.</p>
+
+      <h3>Трансформер – архитектура AI</h3>
+      <p>Все современные LLM построены на архитектуре <strong>Transformer</strong> (2017, Google). Идея простая:</p>
+      <ol>
+        <li><strong>Внимание (Attention)</strong> – AI смотрит на ВСЕ слова одновременно и решает, какие из них связаны друг с другом</li>
+        <li><strong>Предсказание</strong> – на основе связей AI предсказывает следующий токен</li>
+        <li><strong>Повторение</strong> – предсказал один токен → добавил → предсказывает следующий. И так слово за словом</li>
+      </ol>
+
+      <h3>Температура</h3>
+      <p>Когда ты видишь настройку "температура" (0-1) – это контроль случайности:</p>
+      <ul>
+        <li><strong>Температура 0</strong> – AI всегда выбирает самый вероятный токен. Ответы сухие, но точные</li>
+        <li><strong>Температура 1</strong> – AI выбирает более случайные варианты. Ответы творческие, но могут быть странными</li>
+      </ul>
+
+      <h3>Почитать и посмотреть</h3>
+      <div class="resources">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=wjZofJX0v4M" target="_blank">
+          <div class="resource-icon">🎬</div>
+          <div class="resource-info">
+            <div class="resource-title">But what is a GPT? (3Blue1Brown)</div>
+            <div class="resource-desc">Лучшее визуальное объяснение трансформеров (англ., есть субтитры)</div>
+          </div>
+          <span class="resource-tag tag-video">Must-watch</span>
+        </a>
+        <a class="resource-link" href="https://platform.openai.com/tokenizer" target="_blank">
+          <div class="resource-icon">🔧</div>
+          <div class="resource-info">
+            <div class="resource-title">OpenAI Tokenizer</div>
+            <div class="resource-desc">Посмотри, как AI разбивает текст на токены. Вставь любой текст</div>
+          </div>
+          <span class="resource-tag tag-tool">Интерактив</span>
+        </a>
+        <a class="resource-link" href="https://bbycroft.net/llm" target="_blank">
+          <div class="resource-icon">🧠</div>
+          <div class="resource-info">
+            <div class="resource-title">LLM Visualization</div>
+            <div class="resource-desc">3D-визуализация работы нейросети – завораживающе</div>
+          </div>
+          <span class="resource-tag tag-tool">Визуализация</span>
+        </a>
+      </div>
+
+      <h3>✅ Задания</h3>
+      <ul class="task-list" data-lesson="5-1">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Открой OpenAI Tokenizer. Вставь фразу на русском и английском – сравни количество токенов</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Посмотри видео 3Blue1Brown про GPT. Запиши 3 факта, которые тебя удивили</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Спроси AI: "Сколько букв в слове strawberry?" – он часто ошибается. Теперь ты знаешь почему (токены!)</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попроси AI объяснить "трансформер" как будто ты играешь в RPG (внимание = разведка, токены = ходы)</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('4-4')">← Назад</button>
+        <button class="btn btn-complete" id="complete-5-1" onclick="completeLesson('5-1')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('5-2')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 5-2: Мультимодальность ════════════════════ -->
+    <div class="lesson" id="lesson-5-2">
+      <span class="lesson-badge badge-practice">Практика</span>
+      <h2>Мультимодальный AI</h2>
+      <div class="lesson-meta">
+        <span>📖 ~20 мин</span>
+        <span>Фаза 5, Урок 2</span>
+      </div>
+
+      <p><strong>Мультимодальный AI</strong> – это AI, который понимает не только текст, но и картинки, звук, видео. GPT-4o, Claude, Gemini – все уже это умеют.</p>
+
+      <h3>Что можно делать</h3>
+      <ul>
+        <li><strong>Фото → Текст:</strong> сфоткай задачу из учебника → AI её решит</li>
+        <li><strong>Фото → Описание:</strong> загрузи картинку → AI расскажет что на ней</li>
+        <li><strong>Голос → Текст:</strong> надиктуй голосом → AI запишет и обработает</li>
+        <li><strong>Текст → Голос:</strong> AI озвучит текст естественным голосом</li>
+        <li><strong>Текст → Видео:</strong> Sora, Runway – первые шаги в генерации видео</li>
+      </ul>
+
+      <h3>✅ Задания</h3>
+      <ul class="task-list" data-lesson="5-2">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Сфоткай любой предмет. Загрузи в ChatGPT или Claude. Попроси описать/рассказать историю</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Сфоткай задачу из учебника. Попроси AI решить по фото. Проверь правильность</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попробуй голосовой режим в ChatGPT – поговори с AI голосом. Как ощущения?</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Нарисуй что-то от руки (схему, рисунок). Сфоткай и попроси AI создать улучшенную версию</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('5-1')">← Назад</button>
+        <button class="btn btn-complete" id="complete-5-2" onclick="completeLesson('5-2')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('5-3')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 5-3: AI-этика ════════════════════ -->
+    <div class="lesson" id="lesson-5-3">
+      <span class="lesson-badge badge-theory">Теория</span>
+      <h2>AI-этика: великая сила – великая ответственность</h2>
+      <div class="lesson-meta">
+        <span>📖 ~15 мин</span>
+        <span>Фаза 5, Урок 3</span>
+      </div>
+
+      <p>AI – мощный инструмент. Как и любой инструмент, его можно использовать во благо или во вред. Эта тема серьёзная, и разбираться в ней нужно сейчас, пока ты только начинаешь.</p>
+
+      <h3>Проблемы, о которых нужно знать</h3>
+
+      <h4>1. Deepfakes</h4>
+      <p>AI может создавать фейковые фото, видео и голос любого человека. Это может использоваться для мошенничества и буллинга. <strong>Правило: никогда не создавай фейки реальных людей без их согласия.</strong></p>
+
+      <h4>2. Предвзятость (Bias)</h4>
+      <p>AI учится на данных из интернета – и впитывает все предрассудки оттуда. Он может быть предвзят к определённым группам людей. <strong>Правило: всегда критически оценивай ответы AI.</strong></p>
+
+      <h4>3. Галлюцинации</h4>
+      <p>AI уверенно врёт. Он может выдумать факты, цитаты, ссылки. <strong>Правило: проверяй важную информацию из AI в независимых источниках.</strong></p>
+
+      <h4>4. Авторское право</h4>
+      <p>Если AI написал текст за тебя – это не совсем "твой" текст. В школе и университете за такое могут наказать. <strong>Правило: AI – это помощник, не автор. Финальный текст должен быть твоим.</strong></p>
+
+      <h4>5. Приватность</h4>
+      <p>Всё, что ты пишешь AI – может быть использовано для обучения. <strong>Правило: не отправляй AI личные данные (пароли, адреса, фото документов).</strong></p>
+
+      <div class="info-block warning">
+        <div class="block-title">⚠️ Кодекс AI-пользователя</div>
+        <p>1. Я не создаю фейки реальных людей<br>
+        2. Я проверяю факты из AI<br>
+        3. Я не выдаю работу AI за свою<br>
+        4. Я не отправляю AI личные данные<br>
+        5. Я использую AI для создания, а не разрушения</p>
+      </div>
+
+      <h3>✅ Задания</h3>
+      <ul class="task-list" data-lesson="5-3">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попроси AI назвать 5 известных фактов – проверь каждый в Google. Сколько из 5 оказались точными?</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Попроси AI написать "фейковую новость" на безобидную тему. Насколько убедительно? Подумай, почему это опасно</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text">Найди 1 пример реального вреда от AI (deepfake, мошенничество). Расскажи папе что узнал</div>
+        </li>
+      </ul>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('5-2')">← Назад</button>
+        <button class="btn btn-complete" id="complete-5-3" onclick="completeLesson('5-3')">Урок пройден ✓</button>
+        <button class="btn btn-primary" onclick="goTo('5-4')">Далее →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════ 5-4: Финальный проект ════════════════════ -->
+    <div class="lesson" id="lesson-5-4">
+      <span class="lesson-badge badge-project">Финальный проект</span>
+      <h2>Выпускной проект: твой AI-продукт</h2>
+      <div class="lesson-meta">
+        <span>📖 ~1 неделя</span>
+        <span>Фаза 5, Финал курса</span>
+      </div>
+
+      <p>Ты прошёл весь курс. Теперь – создай что-то, чем ты <strong>гордишься</strong>. Это может быть что угодно, но оно должно:</p>
+      <ul>
+        <li>Решать реальную задачу (для тебя, друзей или семьи)</li>
+        <li>Использовать AI (генерация, API, агент)</li>
+        <li>Быть показано другим людям</li>
+      </ul>
+
+      <h3>Идеи (выбери одну или придумай свою)</h3>
+      <ul>
+        <li><strong>AI-репетитор бот</strong> – Telegram-бот, который помогает готовиться к контрольным по конкретному предмету</li>
+        <li><strong>Новостной дайджест</strong> – агент, который каждое утро присылает тебе 5 главных новостей по интересной теме</li>
+        <li><strong>Творческий проект</strong> – комикс/рассказ/игра, сделанные полностью с помощью AI</li>
+        <li><strong>Полезный инструмент</strong> – что-то, что автоматизирует рутину (расписание, списки, переводы)</li>
+        <li><strong>"AI для мамы/бабушки"</strong> – простой бот или инструкция, которая поможет взрослому родственнику начать использовать AI</li>
+      </ul>
+
+      <h3>✅ Шаги финального проекта</h3>
+      <ul class="task-list" data-lesson="5-4">
+        <li class="task-item" data-task="0" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Идея:</strong> Выбери проект. Опиши его в 3 предложениях: что делает, для кого, какой AI использует</div>
+        </li>
+        <li class="task-item" data-task="1" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>План:</strong> Попроси AI помочь составить план из 7–10 шагов. Разбей на дни</div>
+        </li>
+        <li class="task-item" data-task="2" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>MVP:</strong> Сделай минимальную рабочую версию (1-2 функции, но работающие)</div>
+        </li>
+        <li class="task-item" data-task="3" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Тест:</strong> Дай попробовать 2-3 людям. Собери обратную связь</div>
+        </li>
+        <li class="task-item" data-task="4" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Улучшение:</strong> Исправь и добавь фичи по обратной связи</div>
+        </li>
+        <li class="task-item" data-task="5" onclick="toggleTask(this)">
+          <div class="task-checkbox"></div>
+          <div class="task-text"><strong>Презентация:</strong> Покажи финальный проект папе. Расскажи: что, зачем, как, что дальше</div>
+        </li>
+      </ul>
+
+      <div class="info-block key-concept" style="text-align: center; padding: 32px;">
+        <div style="font-size: 48px; margin-bottom: 16px;">🎓</div>
+        <div class="block-title" style="font-size: 18px;">Поздравляю!</div>
+        <p style="font-size: 16px;">Когда ты пройдёшь все уроки и завершишь финальный проект – ты будешь знать об AI больше, чем 95% взрослых. Серьёзно. Большинство людей используют AI как игрушку. Ты – как инструмент и платформу.</p>
+        <p style="font-size: 16px;"><strong>Это только начало. Технологии AI развиваются каждый месяц. Продолжай учиться, экспериментировать и создавать.</strong></p>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="btn btn-secondary" onclick="goTo('5-3')">← Назад</button>
+        <button class="btn btn-complete" id="complete-5-4" onclick="completeLesson('5-4')">Курс пройден! 🎉</button>
+        <button class="btn btn-primary" onclick="goTo('welcome')">На главную</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // ── State ──
+  const STATE_KEY = 'ai-course-andrey';
+  let state = loadState();
+
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(STATE_KEY)) || { completed: [], tasks: {}, current: 'welcome' };
+    } catch { return { completed: [], tasks: {}, current: 'welcome' }; }
+  }
+
+  function saveState() {
+    localStorage.setItem(STATE_KEY, JSON.stringify(state));
+  }
+
+  // ── Navigation ──
+  function goTo(lessonId) {
+    document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    const lesson = document.getElementById('lesson-' + lessonId);
+    const nav = document.querySelector(`.nav-item[data-lesson="${lessonId}"]`);
+
+    if (lesson) lesson.classList.add('active');
+    if (nav) nav.classList.add('active');
+
+    state.current = lessonId;
+    saveState();
+    window.scrollTo(0, 0);
+
+    // Close mobile sidebar
+    document.getElementById('sidebar').classList.remove('open');
+  }
+
+  // ── Complete lesson ──
+  function completeLesson(lessonId) {
+    if (!state.completed.includes(lessonId)) {
+      state.completed.push(lessonId);
+    } else {
+      state.completed = state.completed.filter(id => id !== lessonId);
+    }
+    saveState();
+    updateUI();
+  }
+
+  // ── Tasks ──
+  function toggleTask(el) {
+    const lesson = el.closest('.task-list').dataset.lesson;
+    const task = el.dataset.task;
+    const key = lesson + '-' + task;
+
+    if (!state.tasks[key]) {
+      state.tasks[key] = true;
+      el.classList.add('done');
+    } else {
+      delete state.tasks[key];
+      el.classList.remove('done');
+    }
+    saveState();
+    updateProgress();
+  }
+
+  // ── UI Update ──
+  function updateUI() {
+    // Nav completed dots
+    document.querySelectorAll('.nav-item').forEach(nav => {
+      const lesson = nav.dataset.lesson;
+      if (state.completed.includes(lesson)) {
+        nav.classList.add('completed');
+      } else {
+        nav.classList.remove('completed');
+      }
+    });
+
+    // Complete buttons
+    state.completed.forEach(id => {
+      const btn = document.getElementById('complete-' + id);
+      if (btn) {
+        btn.classList.add('completed');
+        btn.textContent = '✓ Пройден';
+      }
+    });
+
+    // Restore tasks
+    document.querySelectorAll('.task-item').forEach(item => {
+      const lesson = item.closest('.task-list').dataset.lesson;
+      const task = item.dataset.task;
+      const key = lesson + '-' + task;
+      if (state.tasks[key]) {
+        item.classList.add('done');
+      }
+    });
+
+    // Restore current lesson
+    if (state.current) {
+      goTo(state.current);
+    }
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const total = 20; // lessons (excluding welcome)
+    const done = state.completed.length;
+    const pct = Math.round((done / total) * 100);
+
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressText').textContent = done + ' из ' + total + ' уроков (' + pct + '%)';
+  }
+
+  // ── Mobile ──
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  // ── Init ──
+  updateUI();
+</script>
+
+</body>
+</html>
